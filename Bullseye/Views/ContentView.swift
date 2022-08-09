@@ -14,27 +14,68 @@ struct ContentView: View {
     @State private var game: Game = Game()
 
     var body: some View {
+        ZStack {
+            BackgroundView(game: $game)
+            VStack {
+                InstructionView(game: $game)
+                SliderView(sliderValue: $sliderValue)
+                HitButtonView(isAlertVisible: $isAlertVisible, sliderValue: $sliderValue, game: $game)
+            }
+        }
+    }
+}
+
+struct InstructionView: View {
+    @Binding var game: Game
+    
+    var body: some View {
         VStack {
-            Text("🎯🎯🎯\nPUT THE BULLSEYE AS CLOSE AS YOU CAN TO")
-                .bold()
-                .kerning(2.0)
-                .multilineTextAlignment(.center)
-                .lineSpacing(4.0)
-                .font(.footnote)
-            Text("\(game.target)")
-                .kerning(-1.0)
-                .font(.largeTitle)
-                .fontWeight(.black)
-            HStack {
-                Text("1")
-                    .bold()
-                Slider(value: $sliderValue, in: 1.0...100.0)
-                Text("100")
-                    .bold()
-            }.padding(CGFloat(16))
-            Button("Hit me", action: {
-                isAlertVisible = true
-            })
+            InstructionText(text: "🎯🎯🎯\nPut the Bullseye as close as you can to")
+            BigNumberText(number: game.target)
+        }
+            .padding(.leading, 30.0)
+            .padding(.trailing, 30.0)
+    }
+}
+
+struct SliderView: View {
+    
+    @Binding var sliderValue: Double
+    
+    var body: some View {
+        HStack {
+            SliderLabelText(text: "1")
+            Slider(value: $sliderValue, in: 1.0...100.0)
+            SliderLabelText(text: "100")
+        }.padding()
+    }
+}
+
+struct HitButtonView: View {
+    
+    @Binding var isAlertVisible: Bool
+    @Binding var sliderValue: Double
+    @Binding var game: Game
+    
+    var body: some View {
+        Button("HIT ME", action: {
+            isAlertVisible = true
+        })
+            .bold()
+            .font(.title3)
+            .padding(20.0)
+            .background(
+                ZStack {
+                    Color("ButtonColor")
+                    LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.3), Color.clear]), startPoint: .top, endPoint: .bottom)
+                }
+            )
+            .foregroundColor(Color.white)
+            .cornerRadius(21.0)
+            .overlay(
+                RoundedRectangle(cornerRadius: 21.0)
+                    .strokeBorder(Color.white, lineWidth: 2.0)
+            )
             .alert("Hello, there!", isPresented: $isAlertVisible) {
                 Button("Awesome!") {
                     isAlertVisible = false
@@ -44,7 +85,6 @@ struct ContentView: View {
                 let score = game.points(sliderValue: roundedValue)
                 Text("The slider's value is \(roundedValue).\n" + "You scored \(score) points this round.")
             }
-        }
     }
 }
 
