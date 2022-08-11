@@ -18,9 +18,10 @@ struct ContentView: View {
             BackgroundView(game: $game)
             VStack {
                 InstructionView(game: $game)
-                SliderView(sliderValue: $sliderValue)
+                    .padding(.bottom, 100.0)
                 HitButtonView(isAlertVisible: $isAlertVisible, sliderValue: $sliderValue, game: $game)
             }
+            SliderView(sliderValue: $sliderValue)
         }
     }
 }
@@ -78,7 +79,9 @@ struct HitButtonView: View {
             )
             .alert("Hello, there!", isPresented: $isAlertVisible) {
                 Button("Awesome!") {
+                    let score = game.points(sliderValue: Int(sliderValue.rounded()))
                     isAlertVisible = false
+                    game.startNewRound(points: score)
                 }
             } message: {
                 let roundedValue = Int(sliderValue.rounded())
