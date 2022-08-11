@@ -65,4 +65,18 @@ final class BullseyeTests: XCTestCase {
         XCTAssertEqual(game.round, 1)
     }
 
+    func testAddToLeaderboardAfterStartNewRound() {
+        game.startNewRound(points: 100)
+        XCTAssertEqual(game.leaderboardEntries.count, 1)
+        XCTAssertEqual(game.leaderboardEntries[0].points, 100)
+        game.startNewRound(points: 200)
+        XCTAssertEqual(game.leaderboardEntries.count, 2)
+        XCTAssertEqual(game.leaderboardEntries[0].points, 200)
+        XCTAssertEqual(game.leaderboardEntries[1].points, 100)
+        game.startNewRound(points: 150)
+        XCTAssertEqual(game.leaderboardEntries.count, 3)
+        XCTAssertEqual(game.leaderboardEntries[0].points, 200)
+        XCTAssertEqual(game.leaderboardEntries[1].points, 150)
+        XCTAssertEqual(game.leaderboardEntries[2].points, 100)
+    }
 }
